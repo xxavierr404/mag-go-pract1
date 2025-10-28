@@ -153,7 +153,7 @@ func checkNetworkUsage(stats *ServerStats) {
 
 	networkUsagePercent := (float64(stats.NetworkUsage) / float64(stats.NetworkBandwidth)) * 100
 	if networkUsagePercent > 90 {
-		availableBandwidthMbps := (float64(stats.NetworkBandwidth-stats.NetworkUsage) / (1024 * 1024))
+		availableBandwidthMbps := (float64(stats.NetworkBandwidth-stats.NetworkUsage) / 1_000_000)
 		fmt.Printf("Network bandwidth usage high: %d Mbit/s available\n", int64(availableBandwidthMbps))
 	}
 }
