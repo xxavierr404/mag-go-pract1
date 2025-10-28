@@ -11,7 +11,7 @@ import (
 
 const (
 	serverURL    = "http://srv.msk01.gigacorp.local/_stats"
-	pollInterval = 30 * time.Second
+	pollInterval = 5 * time.Second
 	maxErrors    = 3
 )
 
@@ -130,7 +130,7 @@ func checkMemoryUsage(stats *ServerStats) {
 
 	memoryUsagePercent := (float64(stats.UsedMemory) / float64(stats.TotalMemory)) * 100
 	if memoryUsagePercent > 80 {
-		fmt.Printf("Memory usage too high: %d\n", int64(memoryUsagePercent))
+		fmt.Printf("Memory usage too high: %d%%\n", int64(memoryUsagePercent))
 	}
 }
 
@@ -153,7 +153,7 @@ func checkNetworkUsage(stats *ServerStats) {
 
 	networkUsagePercent := (float64(stats.NetworkUsage) / float64(stats.NetworkBandwidth)) * 100
 	if networkUsagePercent > 90 {
-		availableBandwidthMbps := (float64(stats.NetworkBandwidth-stats.NetworkUsage) / (1024 * 1024)) * 8
+		availableBandwidthMbps := (float64(stats.NetworkBandwidth-stats.NetworkUsage) / (1024 * 1024))
 		fmt.Printf("Network bandwidth usage high: %d Mbit/s available\n", int64(availableBandwidthMbps))
 	}
 }
