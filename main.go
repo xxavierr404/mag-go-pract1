@@ -11,12 +11,12 @@ import (
 
 const (
 	serverURL    = "http://srv.msk01.gigacorp.local/_stats"
-	pollInterval = 5 * time.Second
+	pollInterval = 3 * time.Second
 	maxErrors    = 3
 )
 
 type ServerStats struct {
-	LoadAverage      float64
+	LoadAverage      uint64
 	TotalMemory      uint64
 	UsedMemory       uint64
 	TotalDisk        uint64
@@ -79,7 +79,7 @@ func fetchStats() (*ServerStats, error) {
 
 	stats := &ServerStats{}
 
-	stats.LoadAverage, err = strconv.ParseFloat(values[0], 64)
+	stats.LoadAverage, err = strconv.ParseUint(values[0], 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid load average: %v", err)
 	}
@@ -119,7 +119,7 @@ func fetchStats() (*ServerStats, error) {
 
 func checkLoadAverage(stats *ServerStats) {
 	if stats.LoadAverage > 30 {
-		fmt.Printf("Load Average is too high: %d\n", int64(stats.LoadAverage))
+		fmt.Printf("Load Average is too high: %d\n", stats.LoadAverage)
 	}
 }
 
@@ -128,9 +128,9 @@ func checkMemoryUsage(stats *ServerStats) {
 		return
 	}
 
-	memoryUsagePercent := (float64(stats.UsedMemory) / float64(stats.TotalMemory)) * 100
+	memoryUsagePercent := int64((float64(stats.UsedMemory) / float64(stats.TotalMemory)) * 100)
 	if memoryUsagePercent > 80 {
-		fmt.Printf("Memory usage too high: %d%%\n", int64(memoryUsagePercent))
+		fmt.Printf("Memory usage too high: %d%%\n", memoryUsagePercent)
 	}
 }
 
@@ -139,10 +139,10 @@ func checkDiskSpace(stats *ServerStats) {
 		return
 	}
 
-	diskUsagePercent := (float64(stats.UsedDisk) / float64(stats.TotalDisk)) * 100
+	diskUsagePercent := int64((float64(stats.UsedDisk) / float64(stats.TotalDisk)) * 100)
 	if diskUsagePercent > 90 {
-		freeSpaceMB := float64(stats.TotalDisk-stats.UsedDisk) / (1024 * 1024)
-		fmt.Printf("Free disk space is too low: %d Mb left\n", int64(freeSpaceMB))
+		freeSpaceMB := int64(float64(stats.TotalDisk-stats.UsedDisk) / (1024 * 1024))
+		fmt.Printf("Free disk space is too low: %d Mb left\n", freeSpaceMB)
 	}
 }
 
@@ -151,7 +151,7 @@ func checkNetworkUsage(stats *ServerStats) {
 		return
 	}
 
-	networkUsagePercent := (float64(stats.NetworkUsage) / float64(stats.NetworkBandwidth)) * 100
+	networkUsagePercent := int64((float64(stats.NetworkUsage) / float64(stats.NetworkBandwidth)) * 100)
 	if networkUsagePercent > 90 {
 		availableBandwidthMbps := (float64(stats.NetworkBandwidth-stats.NetworkUsage) / 1_000_000)
 		fmt.Printf("Network bandwidth usage high: %d Mbit/s available\n", int64(availableBandwidthMbps))
