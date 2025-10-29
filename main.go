@@ -32,7 +32,6 @@ func main() {
 		stats, err := fetchStats()
 		if err != nil {
 			errorCount++
-			fmt.Printf("Error fetching stats: %v\n", err)
 
 			if errorCount >= maxErrors {
 				fmt.Println("Unable to fetch server statistic")
