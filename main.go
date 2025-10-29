@@ -11,7 +11,7 @@ import (
 
 const (
 	serverURL    = "http://srv.msk01.gigacorp.local/_stats"
-	pollInterval = 3 * time.Second
+	pollInterval = 1 * time.Second
 	maxErrors    = 3
 )
 
